@@ -1,3 +1,4 @@
+// For errors
 import Neon from "./neon.js";
 
 class Parser {
@@ -7,6 +8,7 @@ class Parser {
    */
   constructor(tokens) {
     this.meta = tokens.shift();
+    this.meta.statements = ["if", "for", "while", "try"];
     this.tokens = tokens;
     this.index = 0;
     this.currentToken = this.tokens[this.index];
@@ -134,28 +136,61 @@ class Parser {
     const body = [];
 
     this.#consume("special", "{");
-
-    while (!this.#match("special", "}")) {
-      this.parseThingInMethod();
-    }
-
+    while (!this.#match("special", "}")) body.push(this.parseThingInMethod());
     this.#consume("special", "}");
 
     return body;
   }
 
   parseThingInMethod() {
+    const tokens = this.#lookAhead(this.tokens.length - 1, "EOL");
 
+    if (this.isStatement(tokens)) return this.parseStatement();
+    else return this.parseExpression();
   }
 
   parseStatement() {
-    return this.#advance();
+    const data = [];
+    while (!this.#match("EOL") && !this.#match("EOF")) {
+      console.log(this.currentToken);
+      data.push(this.#advance());
+    }
+    console.log("Statement");
+
+    this.#consume("EOL");
+    return data;
   }
 
   parseExpression() {
-    return this.#advance();
+    const data = [];
+    while (!this.#match("EOL") && !this.#match("EOF")) {
+      console.log(this.currentToken);
+      data.push(this.#advance());
+    }
+    console.log("Expression");
+
+    this.#consume("EOL");
+    return data;
   }
 
+  isStatement(tokens) {
+    let isStatement = false;
+    tokens.forEach((t) => {
+      if (t.type === "identifier") return;
+      else if (t.type === "keyword") {
+        if (this.meta.statements.includes(t.value)) isStatement = true;
+        return;
+      } else if (t.type === "type") isStatement = true;
+      else if (t.type === "special" && t.value === "=") isStatement = true;
+    });
+
+    return isStatement;
+  }
+
+  /**
+   * Generates an AST (Abstract Syntaxt Tree) from tokens.
+   * @returns {Array} Abstract Syntax Tree
+   */
   parse() {
     const ast = [];
 
@@ -165,6 +200,11 @@ class Parser {
   }
 
   // Helper
+  /**
+   * Advances by an amount of tokens
+   * @param {number} amount Amount of tokens to advance by
+   * @returns Last token
+   */
   #advance(amount = 1) {
     const lastToken = this.currentToken;
     this.index += amount;
@@ -172,10 +212,21 @@ class Parser {
     return lastToken;
   }
 
+  /**
+   * Peek forward by an amount o tokens
+   * @param {number} amount Amount of tokens to peek forward by
+   * @returns {object} Found token
+   */
   #peek(amount = 1) {
     return this.tokens[this.index + amount];
   }
 
+  /**
+   * If type and value are correct, returns True, otherwise returns False.
+   * @param {string} type Type to match
+   * @param {string?} value Value to match (if undefined, doesn't check)
+   * @returns {bool} If type and value are correct
+   */
   #match(type, value) {
     if (
       this.currentToken.type === type &&
@@ -185,13 +236,43 @@ class Parser {
     else return false;
   }
 
+  /**
+   * If type and value are correct, returns True, otherwise throws an error.
+   * @param {string} type Type to expect
+   * @param {string?} value Value to expect (if undefined, doesn't check)
+   * @returns {bool} If type and value are correct
+   */
   #expect(type, value) {
     if (this.#match(type, value)) return true;
     else Neon.error(200, [type, this.currentToken.type]);
   }
 
+  /**
+   * If type and value are correct, returns True and advances, otherwise throws an error.
+   * @param {string} type Type to consume
+   * @param {string?} value Value to consume (if undefined, doesn't check)
+   * @returns {bool} If type and value are correct
+   */
   #consume(type, value) {
     if (this.#expect(type, value)) return this.#advance();
+  }
+
+  /**
+   * Returns tokens
+   * @param {number} amount Amount of tokens to look return
+   * @param {string?} untilType If this type is reached, will stop
+   * @returns {Array} Array of tokens
+   */
+  #lookAhead(amount, untilType = "EOF") {
+    const tokens = [];
+
+    for (let i = 1; i < amount; i++) {
+      const token = this.#peek(i);
+      if (!token || token.type === untilType) break;
+      tokens.push(token);
+    }
+
+    return tokens;
   }
 }
 

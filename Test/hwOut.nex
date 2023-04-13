@@ -1,0 +1,35 @@
+{
+  "sys": { "entryPoint": "Program.Main" },
+  "classes": {
+    "Base": {
+      "properties": {},
+      "methods": {
+        "Log": {
+          "builtIn": true,
+          "returnType": "void",
+          "modifiers": ["public", "static"],
+          "parameters": [{ "type": "string", "identifier": "msg" }],
+          "body": ["console.log(%msg%)"]
+        }
+      }
+    },
+    "Program": {
+      "properties": {},
+      "methods": {
+        "Main": {
+          "returnType": "void",
+          "modifiers": ["public", "static"],
+          "parameters": [{ "type": "string[]", "identifier": "args" }],
+          "body": [
+            {
+              "member": "Base",
+              "property": "Log",
+              "type": "call",
+              "args": [{ "type": "string", "value": "Hello, World!" }]
+            }
+          ]
+        }
+      }
+    }
+  }
+}

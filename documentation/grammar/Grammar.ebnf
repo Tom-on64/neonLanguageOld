@@ -1,0 +1,57 @@
+program = programContent EOF;
+
+programContent = {declaration | statement | command | expression};
+
+statement = importStatement | ifStatement | forLoop | whileLoop | tryStatement | errorStatement;
+declaration = classDeclaration | variableDeclaration;
+
+importStatement = "import" identifier EOL;
+ifStatement = "if" "(" condition ")" "{" programContent "}" ["else" (ifStatement | "{" programContent "}")];
+forLoop = "for" "(" variableDeclaration EOL condition EOL operation ")" "{" programContent "}";
+whileLoop = "while" "(" condition ")" "{" programContent "}";
+tryStatement = "try" "{" programContent "}" ["catch" "(" identifier ")" "{" programContent "}"];
+errorStatement = {anyToken} ";" {errorToken};
+anyToken = identifier | keyword | special | type | value | string | float | int | bool | command | EOL;
+errorToken = identifier | keyword | special | type | value | string | float | int | bool | command | EOL | error;
+
+command = "#" commandName {value} EOL;
+commandName = "EOF" | "RUN" | "LOG" | "HLT" | "RAW" | "JPM";
+
+classDeclaration = [attributeList] "class" identifier ["extends" identifier] "{" classContent "}";
+attributeList = "[" attribute {"," attribute} "]";
+attribute = identifier ["(" argumentList  ")"];
+argumentList = argument {"," argument};
+argument = identifier ["=" value];
+
+classContent = (propertyDeclaration | methodDeclaration) {propertyDeclaration | methodDeclaration};
+propertyDeclaration = [attributeList] {modifier} variableDeclaration;
+variableDeclaration = type identifier ["=" value] EOL;
+methodDeclaration = [attributeList] (normalMethodDeclaration | abstractMethodDeclaration);
+normalMethodDeclaration = {modifier} type identifier "(" argumentList ")" "{" programContent "}";
+abstractMethodDeclaration = "abstract" {modifier} type identifier "(" argumentList ")";
+
+expression = variable (operation | execute) EOL;
+variable = identifier {"." identifier};
+operate = operator value {operator value};
+execute = "(" argumentList ")";
+
+value = variable | string | float | int | bool | command | expression;
+modifier = "public" | "private" | "static" | "virtual" | "override" | "protected";
+type = "bool" | "int" | "float" | "string" | "void" | "class" | "object";
+operator = "!" | "=" | "+" | "+=" | "++" | "-" | "-=" | "--" | "/" | "/=" | "*" | "*=" | "**" | "%" | "&" | "|" | "^" | "~" | "<<" | ">>";
+condition = "==" | ">" | ">=" | "<" | "<=" | "&&" | "||" | "is" | "as";
+keyword = "import" | "if" | "else" | "for" | "while" | "try" | "chatch" | "break" | "continue" | "class" | "public" | "private" | "static" | "abstract" | "virtual" | "override" | "protected" | "return" | "this" | "super" | "null" | "true" | "false" | "new";
+special = "{" | "}" | "(" | ")" | "[" | "]" | "," | ".";
+
+identifier = LETTER {LETTER | DIGIT | "_"};
+string = '"' CHAR {CHAR} '"';
+float = int ["." DIGIT {DIGIT}] "f";
+int = ["-"] DIGIT {DIGIT};
+bool = "true" | "false";
+
+CHAR = /./;
+LETTER = /[a-zA-Z]/;
+DIGIT = /[0-9]/;
+EOL = ";";
+EOF = "EndOfFile";
+WS = /\w/ -> "IGNORE";

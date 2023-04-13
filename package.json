@@ -1,0 +1,13 @@
+{
+  "name": "neon",
+  "version": "1.0.0",
+  "description": "Neon is a all-purpose programming language",
+  "type": "module", 
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC"
+}

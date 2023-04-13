@@ -1,0 +1,24 @@
+[
+  { "type": "statement:import", "import": "Base" },
+  {
+    "type": "declaration:class",
+    "identifier": "Program",
+    "body": [
+      {
+        "type": "declaration:method",
+        "identifier": "Main",
+        "returnType": "void",
+        "modifiers": ["public", "static"],
+        "parameters": [{ "type": "string[]", "identifier": "args" }],
+        "body": [
+          {
+            "member": "Base",
+            "property": "Log",
+            "type": "call",
+            "args": [{ "type": "literal:string", "value": "Hello, World!" }]
+          }
+        ]
+      }
+    ]
+  }
+]

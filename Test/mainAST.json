@@ -1,0 +1,86 @@
+[
+  { "type": "statement:import", "imports": ["Base"] },
+  {
+    "type": "statement:declaration",
+    "declares": "class", 
+    "identifier": "Test",
+    "extends": null,
+    "body": [
+      {
+        "type": "statement:declaration",
+        "declares": "property", 
+        "modifiers": ["protected", "static"],
+        "propType": "string",
+        "identifier": "Message",
+        "value": null
+      }
+    ]
+  },
+  {
+    "type": "statement:declaration",
+    "declares": "class",
+    "identifier": "Program",
+    "extends": "Test",
+    "body": [
+      {
+        "type": "statement:declaration",
+        "declares": "property",
+        "modifiers": ["private"],
+        "propType": "int",
+        "identifier": "a",
+        "value": 5
+      },
+      {
+        "type": "statement:declaration",
+        "declares": "property",
+        "modifiers": ["private"],
+        "propType": "int",
+        "identifier": "b",
+        "value": null
+      },
+      {
+        "type": "statement:declaration",
+        "declares": "method",
+        "modifiers": ["public", "static"],
+        "returnType": "void",
+        "identifier": "Main",
+        "parameters": [
+          { "type": "array:string", "identifier": "args", "value": null }
+        ],
+        "body": [
+          {
+            "type": "expression:operation",
+            "mode": "set", 
+            "identifier": "Message",
+            "to": { "type": "string", "value": "Hello, World!" }
+          },
+          {
+            "type": "expression:operation",
+            "mode": "set",
+            "identifier": "b",
+            "to": { "type": "int", "value": 8 }
+          },
+          {
+            "type": "expression:call",
+            "calee": "Base",
+            "property": "Log",
+            "arguments": [{ "type": "variable", "identifier": "Message" }]
+          },
+          {
+            "type": "expression:call",
+            "calee": "Base",
+            "property": "Log",
+            "arguments": [
+              {
+                "type": "expression:operation",
+                "mode": "add", 
+                "a": { "type": "variable", "identifier": "a" },
+                "b": { "type": "variable", "identifier": "b" }
+              }
+            ]
+          }
+        ]
+      }
+    ]
+  }
+]

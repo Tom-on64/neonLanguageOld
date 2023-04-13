@@ -1,1 +1,43 @@
-{"sys":{"entryPoint":"Program.Main"},"classes":{"Base":{"properties":{},"methods":{"Log":{"builtIn":true,"returnType":"void","modifiers":["public","static"],"parameters":[{"type":"string","identifier":"msg"}],"body":["console.log(%msg%)"]}}},"Program":{"properties":{},"methods":{"Main":{"returnType":"void","modifiers":["public","static"],"parameters":[{"type":"string[]","identifier":"args"}],"body":[{"member":"Base","property":"Log","type":"call","args":[{"type":"string","value":"Hello, World!"}]}]}}}}}
+{
+  "sys": { "entryPoint": "Program.Main" },
+  "classes": {
+    "Base": {
+      "properties": {},
+      "methods": {
+        "Log": {
+          "builtIn": true,
+          "returnType": "void",
+          "modifiers": ["public", "static"],
+          "parameters": [{ "type": "string", "identifier": "msg" }],
+          "body": ["console.log(%msg%)"]
+        }
+      }
+    },
+    "Test": {
+      "properties": {
+        "Message": {
+          "type": "string",
+          "modifiers": ["protected", "static"],
+          "value": null
+        }
+      },
+      "methods": {}
+    },
+    "Program": {
+      "properties": {
+        "a": {
+          "type": "int",
+          "modifiers": ["private"],
+          "value": { "type": "literal:int", "value": 5 }
+        },
+        "b": { "type": "int", "modifiers": ["private"], "value": null },
+        "Message": {
+          "type": "string",
+          "modifiers": ["protected", "static"],
+          "value": null
+        }
+      },
+      "methods": {}
+    }
+  }
+}

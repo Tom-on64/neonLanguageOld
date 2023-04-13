@@ -38,17 +38,16 @@ class Neon {
     const code = readFileSync(codePath, "utf-8");
     // Tokenize
     const lexer = new Lexer(code);
-    const tokens = lexer.tokenize(true);
+    const tokens = lexer.tokenize();
     // Parse
     const parser = new Parser(tokens);
     const tree = parser.parse(true);
-    console.log(tree[2].body);
-    /*/ Compile
+    // Compile
     const compiler = new Compiler(tree, config);
-    const nex = compiler.compile();
+    const nex = compiler.compile(true);
     // Output file
     writeFileSync(`${outPath}/${outFile}`, nex);
-    return outPath; */
+    return outPath;
   }
 
   /**

@@ -2,19 +2,20 @@
   { "type": "statement:import", "imports": ["Base"] },
   {
     "type": "statement:declaration",
-    "declares": "class", 
+    "declares": "class",
     "identifier": "Test",
     "extends": null,
     "body": [
       {
         "type": "statement:declaration",
-        "declares": "property", 
-        "modifiers": ["protected", "static"],
+        "declares": "property",
         "propType": "string",
         "identifier": "Message",
-        "value": null
+        "value": null,
+        "modifiers": ["protected", "static"]
       }
-    ]
+    ],
+    "modifiers": ["private"]
   },
   {
     "type": "statement:declaration",
@@ -25,62 +26,59 @@
       {
         "type": "statement:declaration",
         "declares": "property",
-        "modifiers": ["private"],
         "propType": "int",
         "identifier": "a",
-        "value": 5
+        "value": { "type": "literal:int", "value": 5 },
+        "modifiers": ["private"]
       },
       {
         "type": "statement:declaration",
         "declares": "property",
-        "modifiers": ["private"],
         "propType": "int",
         "identifier": "b",
-        "value": null
+        "value": null,
+        "modifiers": ["private"]
       },
       {
         "type": "statement:declaration",
         "declares": "method",
-        "modifiers": ["public", "static"],
         "returnType": "void",
         "identifier": "Main",
-        "parameters": [
-          { "type": "array:string", "identifier": "args", "value": null }
-        ],
+        "parameters": [],
         "body": [
           {
-            "type": "expression:operation",
-            "mode": "set", 
-            "identifier": "Message",
-            "to": { "type": "string", "value": "Hello, World!" }
+            "type": "statement:assign",
+            "assigns": "Message",
+            "to": { "type": "literal:string", "value": "Hello, World!" }
           },
           {
-            "type": "expression:operation",
-            "mode": "set",
-            "identifier": "b",
-            "to": { "type": "int", "value": 8 }
-          },
-          {
-            "type": "expression:call",
-            "calee": "Base",
-            "property": "Log",
-            "arguments": [{ "type": "variable", "identifier": "Message" }]
+            "type": "statement:assign",
+            "assigns": "b",
+            "to": { "type": "literal:int", "value": 8 }
           },
           {
             "type": "expression:call",
-            "calee": "Base",
-            "property": "Log",
-            "arguments": [
+            "callee": { "type": "identifier", "value": "Base" },
+            "prop": { "type": "identifier", "value": "Log" },
+            "args": [{ "type": "variable", "value": "Message" }]
+          },
+          {
+            "type": "expression:call",
+            "callee": { "type": "identifier", "value": "Base" },
+            "prop": { "type": "identifier", "value": "Log" },
+            "args": [
               {
                 "type": "expression:operation",
-                "mode": "add", 
-                "a": { "type": "variable", "identifier": "a" },
-                "b": { "type": "variable", "identifier": "b" }
+                "mode": "unknown",
+                "a": { "type": "identifier", "value": "a" },
+                "b": { "type": "identifier", "value": "b" }
               }
             ]
           }
-        ]
+        ],
+        "modifiers": ["public", "static"]
       }
-    ]
+    ],
+    "modifiers": ["public"]
   }
 ]

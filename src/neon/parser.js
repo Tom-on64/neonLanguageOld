@@ -150,27 +150,82 @@ class Parser {
   }
 
   parseStatement() {
-    const data = [];
-    while (!this.#match("EOL") && !this.#match("EOF")) {
-      console.log(this.currentToken);
-      data.push(this.#advance());
-    }
-    console.log("Statement");
+    const statement = { type: "statement:error" };
+
+    // TODO: Parse conditions/loops
+    statement.type = "statement:assign";
+    statement.assigns = this.#consume("identifier").value;
+
+    this.#consume("special", "=");
+
+    const value = this.#advance();
+    if (this.meta.types.includes(value.type))
+      statement.to = { type: "literal:" + value.type, value: value.value };
 
     this.#consume("EOL");
-    return data;
+
+    return statement;
   }
 
   parseExpression() {
-    const data = [];
-    while (!this.#match("EOL") && !this.#match("EOF")) {
-      console.log(this.currentToken);
-      data.push(this.#advance());
-    }
-    console.log("Expression");
+    const callee = this.#consume("identifier");
+    this.#consume("special", ".");
+    const prop = this.#consume("identifier");
+    this.#consume("special", "(");
+    const args = [];
 
+    while (!this.#match("special", ")")) {
+      if (this.#peek(1).type === "operator") {
+        const a = this.#consume("identifier");
+        const mode = this.parseOperation(this.#consume("operator"));
+        const b = this.#consume("identifier");
+
+        args.push({ type: "expression:operation", mode, a, b });
+        if (this.#match("special", ",")) this.#consume("special", ",");
+
+        continue;
+      }
+
+      if (this.#match("identifier"))
+        args.push({ type: `variable`, value: this.#advance().value });
+      else if (this.meta.types.includes(this.currentToken.type))
+        args.push({ type: `literal:${this.#advance().value}` });
+      else args.push(this.parseExpression());
+
+      if (this.#match("special", ",")) this.#consume("special", ",");
+    }
+
+    this.#consume("special", ")");
     this.#consume("EOL");
-    return data;
+
+    return { type: "expression:call", callee, prop, args };
+  }
+
+  parseOperation(operator) {
+    // += -= /= *=
+    if (operator === "!") return "not";
+    else if (operator === "+") return "add";
+    else if (operator === "++") return "inc";
+    else if (operator === "-") return "sub";
+    else if (operator === "--") return "dec";
+    else if (operator === "*") return "mul";
+    else if (operator === "/") return "div";
+    else if (operator === "**") return "pow";
+    else if (operator === "%") return "mod";
+    else if (operator === "&") return "band";
+    else if (operator === "|") return "bor";
+    else if (operator === "^") return "bxor";
+    else if (operator === "~") return "bnot";
+    else if (operator === "<<") return "bshiftleft";
+    else if (operator === ">>") return "bshiftright";
+    else if (operator === "==") return "equal";
+    else if (operator === ">") return "more";
+    else if (operator === ">=") return "moreoreq";
+    else if (operator === "<") return "less";
+    else if (operator === "<=") return "lessoreq";
+    else if (operator === "&&") return "and";
+    else if (operator === "||") return "or";
+    else return "unknown";
   }
 
   isStatement(tokens) {
@@ -191,10 +246,11 @@ class Parser {
    * Generates an AST (Abstract Syntaxt Tree) from tokens.
    * @returns {Array} Abstract Syntax Tree
    */
-  parse() {
+  parse(logAst) {
     const ast = [];
 
     while (this.currentToken.type !== "EOF") ast.push(this.nextBranch());
+    if (logAst) console.log(ast);
 
     return ast;
   }

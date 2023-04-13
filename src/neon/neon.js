@@ -42,7 +42,7 @@ class Neon {
     // Parse
     const parser = new Parser(tokens);
     const tree = parser.parse(true);
-    console.log(tree[1]);
+    console.log(tree[2].body);
     /*/ Compile
     const compiler = new Compiler(tree, config);
     const nex = compiler.compile();

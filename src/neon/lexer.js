@@ -36,7 +36,6 @@ class Lexer {
     this.types = ["bool", "int", "float", "string", "void", "class", "object"];
     this.operators = [
       "!",
-      "=",
       "==",
       ">",
       ">=",
@@ -66,7 +65,7 @@ class Lexer {
       "is",
       "as",
     ];
-    this.special = ["{", "}", "(", ")", "[", "]", ",", "."];
+    this.special = ["{", "}", "(", ")", "[", "]", ",", ".", "="];
 
     // For error messages and such :)
     this.line = 0;
@@ -199,7 +198,11 @@ class Lexer {
   }
 
   tokenize(logToken = false) {
-    const tokens = [];
+    const tokens = [
+      {
+        types: null,
+      },
+    ];
     let token = this.getNextToken();
 
     while (token.type !== "EOF") {
@@ -209,6 +212,8 @@ class Lexer {
     }
 
     tokens.push({ type: "EOF" });
+
+    tokens[0].types = this.types;
 
     return tokens;
   }
